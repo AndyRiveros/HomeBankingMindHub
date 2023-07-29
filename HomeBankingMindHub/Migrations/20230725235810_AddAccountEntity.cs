@@ -8,7 +8,7 @@ namespace HomeBankingMindHub.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Account",
+                name: "Accounts",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
@@ -20,9 +20,9 @@ namespace HomeBankingMindHub.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Account", x => x.Id);
+                    table.PrimaryKey("PK_Accounts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Account_Clients_ClientId",
+                        name: "FK_Accounts_Clients_ClientId",
                         column: x => x.ClientId,
                         principalTable: "Clients",
                         principalColumn: "Id",
@@ -30,15 +30,15 @@ namespace HomeBankingMindHub.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Account_ClientId",
-                table: "Account",
+                name: "IX_Accounts_ClientId",
+                table: "Accounts",
                 column: "ClientId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Account");
+                name: "Accounts");
         }
     }
 }
