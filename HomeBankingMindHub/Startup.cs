@@ -12,7 +12,7 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
  
-//
+
 namespace HomeBankingMindHub
 {
     public class Startup
@@ -39,6 +39,8 @@ namespace HomeBankingMindHub
 
             services.AddControllers().AddJsonOptions(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
+
+            services.AddScoped<IAccountRepository, AccountRepository>();
 
         }
 

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 
 namespace HomeBankingMindHub.Models
 {
@@ -13,6 +14,7 @@ namespace HomeBankingMindHub.Models
 
         public double Balance { get; set; }
 
+        public ICollection<TransactionDTO> Transactions { get; set; }
         
     }
 }

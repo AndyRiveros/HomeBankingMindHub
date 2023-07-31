@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.Diagnostics;
+using System;
 using System.Linq;
 
 namespace HomeBankingMindHub.Models
@@ -14,7 +15,7 @@ namespace HomeBankingMindHub.Models
                 {
                     new Client { Email = "vcoronado@gmail.com", FirstName="Victor", LastName="Coronado", Password="123456"},
 
-                    new Client {Email= "arrivero@gmail.com", FirstName="Andres", LastName="Fernando", Password="123456" }
+                    new Client {Email= "ariveros@gmail.com", FirstName="Andres", LastName="Fernando", Password="123456" }
                 };
 
 
@@ -35,7 +36,31 @@ namespace HomeBankingMindHub.Models
                 {
                     var accounts = new Account[]
                     {
-                        new Account {ClientId = accountVictor.Id, CreationDate = DateTime.Now, Number = "VIN001", Balance = 0 }
+                        new Account
+                        {
+                            ClientId=accountVictor.Id, CreationDate = DateTime.Now, Number = "VIN001", Balance =10000,
+                        }
+                    };
+                   foreach(Account account in accounts)
+                    {
+                        context.Accounts.Add(account);
+                    }
+                    context.SaveChanges();
+
+                }
+            }
+
+            if (!context.Accounts.Any())
+            {
+                var accountAndres = context.Clients.FirstOrDefault(c => c.Email == "ariveros@gmail.com");
+                if (accountAndres != null)
+                {
+                    var accounts = new Account[]
+                    {
+                        new Account
+                        {
+                            ClientId=accountAndres.Id, CreationDate = DateTime.Now, Number = "VIN002", Balance =1000,
+                        }
                     };
                     foreach (Account account in accounts)
                     {
@@ -59,7 +84,7 @@ namespace HomeBankingMindHub.Models
 
                     {
 
-                        new Transaction { AccountId= account1.Id, Amount = 10000, Date= DateTime.Now.AddHours(-5), Description = "Transferencia reccibida", Type = TransactionType.CREDIT.ToString() },
+                        new Transaction { AccountId= account1.Id, Amount = 10000, Date= DateTime.Now.AddHours(-5), Description = "Transferencia recibida", Type = TransactionType.CREDIT.ToString() },
 
                         new Transaction { AccountId= account1.Id, Amount = -2000, Date= DateTime.Now.AddHours(-6), Description = "Compra en tienda mercado libre", Type = TransactionType.DEBIT.ToString() },
 
