@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using HomeBankingMindHub.DTOs;
 
 namespace HomeBankingMindHub.Controllers
 {
@@ -63,6 +64,14 @@ namespace HomeBankingMindHub.Controllers
 
                             Number = ac.Number
 
+                        }).ToList(),
+                        Loans = client.ClientLoan.Select(cl => new ClientLoanDTO
+                        {
+                            Id = cl.Id,
+                            LoanId = cl.LoanId,
+                            Name = cl.loan.Name,
+                            Amount = cl.Amount,
+                            Payments = int.Parse(cl.Payments)
                         }).ToList()
 
                     };
@@ -139,6 +148,14 @@ namespace HomeBankingMindHub.Controllers
 
                         Number = ac.Number
 
+                    }).ToList(),
+                    Loans = client.ClientLoan.Select(cl => new ClientLoanDTO
+                    {
+                        Id = cl.Id,
+                        LoanId = cl.LoanId,
+                        Name = cl.loan.Name,
+                        Amount = cl.Amount,
+                        Payments = int.Parse(cl.Payments)
                     }).ToList()
 
                 };

@@ -4,14 +4,16 @@ using HomeBankingMindHub.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace HomeBankingMinHub.Migrations
+namespace HomeBankingMindHub.Migrations
 {
     [DbContext(typeof(HomeBankingContext))]
-    partial class HomeBankingContextModelSnapshot : ModelSnapshot
+    [Migration("20230731154206_addLoanEntity")]
+    partial class addLoanEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
