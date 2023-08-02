@@ -1,11 +1,14 @@
 using HomeBankingMindHub.Models;
 using HomeBankingMindHub.Repositories;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,13 +20,14 @@ namespace HomeBankingMindHub
 {
     public class Startup
     {
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
 
-
+        
 
 
         public IConfiguration Configuration { get; }
@@ -41,6 +45,17 @@ namespace HomeBankingMindHub
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
             services.AddScoped<IAccountRepository, AccountRepository>();
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+           .AddCookie(options =>
+           {
+               options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
+               options.LoginPath = new PathString("/index.html");
+           });
+            //autorización
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("ClientOnly", policy => policy.RequireClaim("Client"));
+            });
 
         }
 
@@ -60,6 +75,9 @@ namespace HomeBankingMindHub
 
             app.UseRouting();
 
+            app.UseAuthentication();
+            //autorización
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
@@ -68,6 +86,10 @@ namespace HomeBankingMindHub
 
                 endpoints.MapControllers();
             });
+        
+        
         }
+        
     }
+
 }
