@@ -6,23 +6,27 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using HomeBankingMindHub.DTOs;
+using Microsoft.AspNetCore.Identity;
 
 namespace HomeBankingMindHub.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api")]
     [ApiController]
     public class AccountsController : ControllerBase
     {
         private IAccountRepository _accountRepository;
-        public AccountsController(IAccountRepository accountRepository)
+        private IClientRepository _clientRepository;
+        public AccountsController(IAccountRepository accountRepository, IClientRepository clientRepository)
         {
             _accountRepository = accountRepository;
+            _clientRepository = clientRepository;
         }
 
         // GET api/accounts
-        [HttpGet]
+        [HttpGet("accounts")]
         public IActionResult Get()
         {
+
             try
             {
                 var accounts = _accountRepository.GetAllAccounts();
@@ -62,7 +66,7 @@ namespace HomeBankingMindHub.Controllers
         }
 
         // GET api/accounts/{id}
-        [HttpGet("{id}")]
+        [HttpGet("accounts/{id}")]
         public IActionResult get(long id) 
         {
             try
@@ -99,5 +103,52 @@ namespace HomeBankingMindHub.Controllers
                 return StatusCode(500, "Ocurrió un error al obtener la cuenta: " + ex.Message);
             }
         }
+        [HttpPost("clients/current/accounts")]
+        public IActionResult Post()
+        {
+            try
+            {
+                string email = User.FindFirst("Client") != null ? User.FindFirst("Client").Value : String.Empty;
+                if (email == string.Empty)
+                {
+                    return Forbid();
+                }
+
+
+                Client client = _clientRepository.FindByEmail(email);
+                if (client == null)
+                {
+                    return Forbid();
+                }
+
+
+                if (client.Accounts.Count >= 3)
+                {
+                    return Forbid();
+                }
+
+
+                Random random = new();
+
+                var account = new Account
+                {
+                    Number = "VIN-" + random.Next(100000, 1000000).ToString(),
+                    Balance = 0,
+                    ClientId = client.Id,
+                    CreationDate = DateTime.Now,
+                };
+
+                _accountRepository.Save(account);
+
+                return Created(":)", account);
+                    
+            }catch(Exception ex) 
+            {
+                return StatusCode(500, ex.Message);
+            }
+            
+        }
+            
+
     }
 }

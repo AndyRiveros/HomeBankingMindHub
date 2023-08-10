@@ -39,12 +39,14 @@ namespace HomeBankingMindHub
 
             services.AddRazorPages();
 
-            services.AddScoped<IClientRepository, ClientRepository>();
 
             services.AddControllers().AddJsonOptions(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
+            services.AddScoped<IClientRepository, ClientRepository>();
             services.AddScoped<IAccountRepository, AccountRepository>();
+            services.AddScoped<ICardRepository, CardRepository>();
+
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
            .AddCookie(options =>
            {
@@ -85,6 +87,8 @@ namespace HomeBankingMindHub
                 endpoints.MapRazorPages();
 
                 endpoints.MapControllers();
+
+               
             });
         
         

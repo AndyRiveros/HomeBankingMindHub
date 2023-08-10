@@ -14,13 +14,14 @@ namespace HomeBankingMindHub.Controllers
     public class ClientsController : ControllerBase
     {
         private IClientRepository _clientRepository;
+        private IAccountRepository _accountRepository;
 
-        public ClientsController(IClientRepository clientRepository)
+        public ClientsController(IClientRepository clientRepository, IAccountRepository accountRepository)
 
         {
 
             _clientRepository = clientRepository;
-
+            _accountRepository = accountRepository;
         }
 
         [HttpGet]
@@ -282,6 +283,20 @@ namespace HomeBankingMindHub.Controllers
                 };
 
                 _clientRepository.Save(newClient);
+
+                Client currentClient = _clientRepository.FindByEmail(newClient.Email);
+
+                Random random = new();
+
+                var account = new Account
+                {
+                    Number = "VIN-" + random.Next(100000, 1000000).ToString(),
+                    Balance = 0,
+                    ClientId = currentClient.Id,
+                    CreationDate = DateTime.Now,
+                };
+
+                _accountRepository.Save(account);
                 return Created("", newClient);
 
             }
