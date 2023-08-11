@@ -20,5 +20,7 @@ namespace HomeBankingMindHub.Models
         public DbSet<Card> Cards { get; set; }
 
         
+
+        
     }
 }

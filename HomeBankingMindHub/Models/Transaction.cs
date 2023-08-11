@@ -17,5 +17,9 @@ namespace HomeBankingMindHub.Models
         public Account Account { get; set; }
 
         public long AccountId { get; set; }
+
+        //Client client = new Client();
+
+        //public long clientId { get; set; }
     }
 }

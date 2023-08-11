@@ -103,6 +103,37 @@ namespace HomeBankingMindHub.Controllers
                 return StatusCode(500, "Ocurrió un error al obtener la cuenta: " + ex.Message);
             }
         }
+        [HttpGet("clients/current/accounts")]
+
+        public IActionResult GetCurrentAccount () 
+        {
+
+            try
+            {
+                string email = User.FindFirst("Client") != null ? User.FindFirst("Client").Value : String.Empty;
+                if (email == string.Empty)
+                {
+                    return Forbid();
+                }
+
+
+                Client client = _clientRepository.FindByEmail(email);
+                if (client == null)
+                {
+                    return Forbid();
+                }
+
+                var userAccounts = _accountRepository.GetAccountsByClient(client.Id);
+                return Ok(userAccounts);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+
+
+        }
+
         [HttpPost("clients/current/accounts")]
         public IActionResult Post()
         {
@@ -140,7 +171,7 @@ namespace HomeBankingMindHub.Controllers
 
                 _accountRepository.Save(account);
 
-                return Created(":)", account);
+                return Created("", account);
                     
             }catch(Exception ex) 
             {

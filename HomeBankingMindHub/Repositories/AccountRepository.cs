@@ -10,6 +10,7 @@ namespace HomeBankingMindHub.Repositories
     {
         public AccountRepository(HomeBankingContext repositoryContext) : base(repositoryContext)
         {
+        
         }
 
 

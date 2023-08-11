@@ -11,7 +11,7 @@ namespace HomeBankingMindHub.Repositories
         void Save(Account account);
         IEnumerable<Account> GetAccountsByClient(long clientId);
 
-
+        Account FindByNumber(string number);
 
 
     }
