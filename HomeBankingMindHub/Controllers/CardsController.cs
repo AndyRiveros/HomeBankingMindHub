@@ -29,64 +29,70 @@ namespace HomeBankingMindHub.Controllers
                 string email = User.FindFirst("Client") != null ? User.FindFirst("Client").Value : string.Empty;
                 if (email == string.Empty)
                 {
-                    return Forbid("Email vacío. ");
+                    return Forbid();
+                }
+                Client currentClient = _clientRepository.FindByEmail(email);
+                if (currentClient == null)
+                {
+                    return Forbid();
                 }
 
-                Client client = _clientRepository.FindByEmail(email);
-
-                if (client == null)
+                CardType cardType;
+                if (!Enum.TryParse(card.Type, out cardType))
                 {
-                    return Forbid("No existe el cliente.");
+                    return StatusCode(403, $"El tipo {card.Type} no es válido");
+                }
+                CardColor cardColor;
+                if (!Enum.TryParse(card.Color, out cardColor))
+                {
+                    return StatusCode(403, $"El color {card.Color} no es válido");
                 }
 
-                //CardType cardType;
-                //if(!Enum.TryParse(card.Type, out cardType))
-                //{
-                //    return StatusCode(403, $"El tipo de tarjeta {card.Type} no es válido");
-                //}
-                //CardColor cardColor;
-                //if (!Enum.TryParse(card.Color, out cardColor))
-                //{
-                //    return StatusCode(403, $"El tipo de tarjeta {card.Type} no es válido");
-                //}
-                //int numberOfCards= client.Cards.Where( card => card.Type == card.Type).Count();
-                //if (numberOfCards>=3)
-                //{
-                //    return StatusCode(403, $"El cliente tiene 3 tarjetas de tipo {card.Type}, no es posible crear otra");
-                //}
-
-               if (client.Cards.Count >= 3)
+                int numberOfCards = currentClient.Cards.Where(c => c.Type == card.Type).Count();
+                if (numberOfCards >= 3)
                 {
-                   return Forbid();
+                    return StatusCode(403, $"El cliente tiene 3 tarjetas del {card.Type}, por lo tanto alcanzó el límite");
                 }
 
-                Random random = new Random();
-                int next()
+                static string RandomNumber(int digits)
                 {
-                    return random.Next(1000, 10000);
+                    Random random = new Random();
+                    if (digits <= 0)
+                    {
+                        throw new ArgumentException("Debe ser mayor que cero.", nameof(digits));
+                    }
+                    int min = (int)Math.Pow(10, digits - 1);
+                    int max = (int)Math.Pow(10, digits);
+
+                    int randomNumber = random.Next(min, max);
+                    return randomNumber.ToString();
                 }
 
-                var newCard = new Card
+                ///pending check existing card number
+                Card newCard = new Card
                 {
-                    ClientId = client.Id,
-                    CardHolder = client.FirstName + " " + client.LastName,
-                    Type = card.Type,
-                    Color = card.Color,
-                    Number = $"{next()}-{next()}-{next()}-{next()}",
-                    Cvv = random.Next(100, 1000),
+                    ClientId = currentClient.Id,
+                    CardHolder = $"{currentClient.FirstName} {currentClient.LastName}",
+                    Type = cardType.ToString(),
+                    Color = cardColor.ToString(),
+                    Number = $"{RandomNumber(4)}-{RandomNumber(4)}-{RandomNumber(4)}-{RandomNumber(4)}",
+                    Cvv = int.Parse(RandomNumber(3)),
                     FromDate = DateTime.Now,
                     ThruDate = DateTime.Now.AddYears(4),
-                   
                 };
-
                 _cardRepository.Save(newCard);
-                return Ok(newCard);
+
+                return Created("La tarjeta ha sido creada de forma exitosa", newCard);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }
         }
+
+
+
+
         [HttpGet("clients/current/cards")]
         public IActionResult Get()
         {
@@ -101,7 +107,7 @@ namespace HomeBankingMindHub.Controllers
                 Client client = _clientRepository.FindByEmail(email);
                 if (client == null)
                 {
-                    return Forbid("No existe el cliente.");
+                    return Forbid("cliente inexistente.");
                 }
 
                 var cards = _cardRepository.GetCardsByClient(client.Id);
