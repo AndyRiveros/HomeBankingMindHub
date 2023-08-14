@@ -32,7 +32,7 @@ namespace HomeBankingMindHub.Controllers
                 string email = User.FindFirst("Client") != null ? User.FindFirst("Client").Value : string.Empty;
                 if (email == string.Empty)
                 {
-                    return Forbid("Email vacío");
+                    return Forbid("Empty email");
                 }
 
                 Client client = _clientRepository.FindByEmail(email);
@@ -54,7 +54,7 @@ namespace HomeBankingMindHub.Controllers
 
                 if (transferDTO.Amount == 0 || transferDTO.Description == string.Empty)
                 {
-                    return Forbid("Monto o descripción no proporcionados.");
+                    return Forbid("wrong amount or description.");
                 }
 
                 //buscamos las cuentas
@@ -114,7 +114,7 @@ namespace HomeBankingMindHub.Controllers
                 }
             
 
-                return Created("Creado con exito", fromAccount);
+                return Created("Created with success", fromAccount);
 
             }
             catch (Exception ex)

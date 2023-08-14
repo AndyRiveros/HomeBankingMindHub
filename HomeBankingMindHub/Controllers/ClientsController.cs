@@ -195,14 +195,14 @@ namespace HomeBankingMindHub.Controllers
             {
                 //validamos datos antes
                 if (String.IsNullOrEmpty(client.Email) || String.IsNullOrEmpty(client.Password) || String.IsNullOrEmpty(client.FirstName) || String.IsNullOrEmpty(client.LastName))
-                    return StatusCode(403, "datos inválidos");
+                    return StatusCode(403, "invalid types");
 
                 //buscamos si ya existe el usuario
                 Client user = _clientRepository.FindByEmail(client.Email);
 
                 if (user != null)
                 {
-                    return StatusCode(403, "Email está en uso");
+                    return StatusCode(403, "Email en uso");
                 }
 
                 Client newClient = new Client

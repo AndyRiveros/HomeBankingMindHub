@@ -40,12 +40,12 @@ namespace HomeBankingMindHub.Controllers
                 CardType cardType;
                 if (!Enum.TryParse(card.Type, out cardType))
                 {
-                    return StatusCode(403, $"El tipo de tarjeta {card.Type} no es válido");
+                    return StatusCode(403, $"El tipo de tarjeta {card.Type} no es valido");
                 }
                 CardColor cardColor;
                 if (!Enum.TryParse(card.Color, out cardColor))
                 {
-                    return StatusCode(403, $"El color de tarjeta {card.Color} no es válido");
+                    return StatusCode(403, $"El color de tarjeta {card.Color} no es valido");
                 }
 
                 int numberOfCards = currentClient.Cards.Where(c => c.Type == card.Type).Count();

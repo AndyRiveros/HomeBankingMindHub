@@ -61,7 +61,7 @@ namespace HomeBankingMindHub.Controllers
             catch (Exception ex)
             {
                 // Manejo de la excepción y devolución de una respuesta de error
-                return StatusCode(500, "Ocurrió un error al obtener las cuentas: " + ex.Message);
+                return StatusCode(500, "Ocurrio un error al obtener las cuentas: " + ex.Message);
             }
         }
 
@@ -100,7 +100,7 @@ namespace HomeBankingMindHub.Controllers
             catch (Exception ex)
             {
                 // Manejo de la excepción y devolución de una respuesta de error
-                return StatusCode(500, "Ocurrió un error al obtener la cuenta: " + ex.Message);
+                return StatusCode(500, "Ocurrio un error al obtener la cuenta: " + ex.Message);
             }
         }
         [HttpGet("clients/current/accounts")]
