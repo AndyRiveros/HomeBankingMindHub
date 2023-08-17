@@ -9,5 +9,6 @@ namespace HomeBankingMindHub.Repositories
         void Save(Client client);
         Client FindById(long id);
         Client FindByEmail(string email);
+        bool ValidatePassword(string password);
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace HomeBankingMindHub.Repositories
 {
@@ -45,6 +46,18 @@ namespace HomeBankingMindHub.Repositories
                 .ThenInclude(cl => cl.loan)
             .Include(client => client.Cards)
             .FirstOrDefault();
+        }
+        public bool ValidatePassword(string password)
+        {
+            string upperPassword = @"[A-Z]";
+            string lowerPassword = @"[a-z]";
+            string specialPassword = @"[\W_]";
+
+            bool hasUpper = Regex.IsMatch(password, upperPassword);
+            bool hasLower = Regex.IsMatch(password, lowerPassword);
+            bool hasSpecial = Regex.IsMatch(password, specialPassword);
+
+            return hasUpper && hasLower && hasSpecial;
         }
     }
 }

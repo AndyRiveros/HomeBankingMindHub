@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using HomeBankingMindHub.DTOs;
+using System.Text.RegularExpressions;
 
 namespace HomeBankingMindHub.Controllers
 {
@@ -212,6 +213,50 @@ namespace HomeBankingMindHub.Controllers
                     FirstName = client.FirstName,
                     LastName = client.LastName,
                 };
+
+                Regex regexName = new Regex("[a-zA-Z ]");
+                Match matchFirstName = regexName.Match(newClient.FirstName);
+                Match matchLastName = regexName.Match(newClient.LastName);
+
+                Regex regexEmail = new Regex("^(([^<>()[\\]\\\\.,;:\\s@\\\"\"]+(\\.[^<>()[\\]\\\\.,;:\\s@\\\"\"]+)*)|(\\\"\".+\\\"\"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$");
+                Match matchEmail = regexEmail.Match(newClient.Email);
+
+                if (newClient.FirstName.Length < 3)
+                {
+                    return Forbid("El nombre debe contener 3 o mas caracteres");
+                }
+
+                if (newClient.LastName.Length < 3)
+                {
+                    return Forbid("El apellido debe contener 3 o mas caracteres");
+                }
+
+                if (!matchFirstName.Success)
+                {
+                    return Forbid("El nombre no puede contener caracteres especiales");
+                }
+
+                if (!matchLastName.Success)
+                {
+                    return Forbid("El apellido no puede contener caracteres especiales");
+                }
+
+                if (!matchEmail.Success)
+                {
+                    return Forbid("El email no es valido");
+                }
+
+                if (newClient.Password.Length < 8)
+                {
+                    return Forbid("El minimo de caracteres para la contraseña es de 8");
+                }
+
+                if (!_clientRepository.ValidatePassword(newClient.Password))
+                {
+                    return Forbid("Contraseña invalida");
+                }
+
+
 
                 _clientRepository.Save(newClient);
 
